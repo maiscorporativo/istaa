@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { @apply border-surface-700; }
+  body {
+    @apply bg-surface-900 text-slate-100 font-sans antialiased;
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(37, 99, 235, 0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(99, 102, 241, 0.06) 0%, transparent 60%);
+    background-attachment: fixed;
+  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-surface-900; }
+  ::-webkit-scrollbar-thumb { @apply bg-surface-700 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-slate-500; }
+}
+
+@layer components {
+  .glass {
+    @apply bg-surface-800/60 backdrop-blur-sm border border-white/5;
+  }
+  .glass-hover {
+    @apply hover:bg-surface-800/80 transition-all duration-200;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium transition-all duration-150;
+  }
+  .input-dark {
+    @apply w-full bg-surface-900/80 border border-white/10 rounded-xl px-4 py-2.5 text-slate-100 placeholder-slate-500
+           focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/50 transition-all duration-200;
+  }
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-medium
+           transition-all duration-200 shadow-lg shadow-brand-600/20 hover:shadow-brand-500/30 active:scale-95;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl text-slate-400 hover:text-slate-100
+           hover:bg-white/5 transition-all duration-200 active:scale-95;
+  }
+  .btn-danger {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl text-red-400 hover:text-white
+           hover:bg-red-500/20 transition-all duration-200 active:scale-95;
+  }
+  .card {
+    @apply glass rounded-2xl p-5 transition-all duration-200;
+  }
+  .card-hover {
+    @apply hover:border-brand-500/30 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-brand-500/10;
+  }
+  .sidebar-link {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100
+           hover:bg-white/5 transition-all duration-200 font-medium text-sm;
+  }
+  .sidebar-link.active {
+    @apply text-brand-400 bg-brand-500/10 hover:bg-brand-500/15;
+  }
+  .skeleton {
+    @apply animate-shimmer bg-gradient-to-r from-surface-800 via-surface-700 to-surface-800 bg-[length:200%_100%] rounded-xl;
+  }
+}
