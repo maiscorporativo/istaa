@@ -6,7 +6,7 @@ import type { Profile, UserRole } from '../store/useAuth';
 export function UsersManagement() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Add User Modal State
   const [showAddModal, setShowAddModal] = useState(false);
   const [newEmail, setNewEmail] = useState('');
@@ -47,15 +47,14 @@ export function UsersManagement() {
         password: newPassword,
         role: newRole
       });
-      
-      // Automatically refresh the list or inject the new user
+
       setProfiles([{
         id: newUser.id,
         email: newUser.email,
         role: newUser.role,
         created_at: new Date().toISOString()
       }, ...profiles]);
-      
+
       setShowAddModal(false);
       setNewEmail('');
       setNewPassword('');
@@ -73,74 +72,74 @@ export function UsersManagement() {
 
   return (
     <div className="p-8 max-w-5xl mx-auto space-y-8">
-      <div className="flex items-center justify-between border-b border-white/5 pb-6">
+      <div className="flex items-center justify-between border-b border-border pb-6">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 shadow-lg shadow-purple-500/20">
-            <UserCog className="w-6 h-6" />
+          <div className="w-11 h-11 rounded-md bg-accent/10 flex items-center justify-center text-accent">
+            <UserCog className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">Gestão de Acessos</h1>
-            <p className="text-slate-400 mt-1">Gerencie os níveis de permissão dos usuários do sistema.</p>
+            <h1 className="text-2xl font-bold text-foreground tracking-tight">Gestão de acessos</h1>
+            <p className="text-muted-foreground mt-1 text-sm">Gerencie os níveis de permissão dos usuários do sistema.</p>
           </div>
         </div>
-        
-        <button 
+
+        <button
           onClick={() => setShowAddModal(true)}
           className="btn-primary"
         >
-          <Plus className="w-4 h-4 mr-2" />
-          Adicionar Usuário
+          <Plus className="w-4 h-4" />
+          Adicionar usuário
         </button>
       </div>
 
-      <div className="card overflow-hidden">
+      <div className="card overflow-hidden !p-0">
         {loading ? (
-          <div className="p-8 text-center text-slate-400">Carregando usuários...</div>
+          <div className="p-8 text-center text-muted-foreground text-sm">Carregando usuários...</div>
         ) : (
           <table className="w-full text-left text-sm">
-            <thead className="bg-surface-800/50 text-slate-400 text-xs uppercase font-semibold">
+            <thead className="bg-muted text-muted-foreground text-xs uppercase font-semibold">
               <tr>
-                <th className="px-6 py-4">Usuário (E-mail)</th>
-                <th className="px-6 py-4">Data de Entrada</th>
-                <th className="px-6 py-4">Nível de Acesso</th>
-                <th className="px-6 py-4">Ações</th>
+                <th className="px-6 py-3.5">Usuário (e-mail)</th>
+                <th className="px-6 py-3.5">Data de entrada</th>
+                <th className="px-6 py-3.5">Nível de acesso</th>
+                <th className="px-6 py-3.5">Ações</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-border">
               {profiles.map(profile => (
-                <tr key={profile.id} className="hover:bg-white/5 transition-colors">
-                  <td className="px-6 py-4">
-                    <span className="font-medium text-slate-200">{profile.email}</span>
+                <tr key={profile.id} className="hover:bg-muted/60 transition-colors">
+                  <td className="px-6 py-3.5">
+                    <span className="font-medium text-foreground">{profile.email}</span>
                   </td>
-                  <td className="px-6 py-4 text-slate-400">
+                  <td className="px-6 py-3.5 text-muted-foreground">
                     {new Date(profile.created_at).toLocaleDateString('pt-BR')}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-3.5">
                     <select
                       value={profile.role}
                       onChange={(e) => updateRole(profile.id, e.target.value as UserRole)}
-                      className="input-dark py-1.5 px-3 text-xs min-w-[140px]"
+                      className="input py-1.5 px-3 text-xs min-w-[140px]"
                     >
-                      <option value="viewer">Viewer (Apenas Leitura)</option>
-                      <option value="editor">Editor (Pode Editar Dados)</option>
-                      <option value="superadmin">Superadmin (Acesso Total)</option>
+                      <option value="viewer">Viewer (apenas leitura)</option>
+                      <option value="editor">Editor (pode editar dados)</option>
+                      <option value="superadmin">Superadmin (acesso total)</option>
                     </select>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-3.5">
                     <button
                       onClick={() => resetPassword(profile)}
                       title="Enviar e-mail de redefinição de senha"
-                      className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition-colors opacity-50"
+                      className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md bg-warning/10 text-warning border border-warning/25 hover:bg-warning/15 transition-colors opacity-60"
                     >
                       <KeyRound className="w-3.5 h-3.5" />
-                      Resetar Senha
+                      Resetar senha
                     </button>
                   </td>
                 </tr>
               ))}
               {profiles.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-slate-500">
+                  <td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">
                     Nenhum usuário encontrado.
                   </td>
                 </tr>
@@ -151,63 +150,63 @@ export function UsersManagement() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="card bg-surface-900/50 p-4 flex gap-3">
-          <ShieldAlert className="w-5 h-5 text-slate-400 shrink-0" />
+        <div className="card p-4 flex gap-3">
+          <ShieldAlert className="w-5 h-5 text-muted-foreground shrink-0" />
           <div>
-            <h4 className="text-sm font-semibold text-white">Viewer</h4>
-            <p className="text-xs text-slate-500 mt-1">Só pode consultar, buscar e visualizar detalhes. Não consegue criar, editar ou excluir.</p>
+            <h4 className="text-sm font-semibold text-foreground">Viewer</h4>
+            <p className="text-xs text-muted-foreground mt-1">Só pode consultar, buscar e visualizar detalhes. Não consegue criar, editar ou excluir.</p>
           </div>
         </div>
-        <div className="card bg-surface-900/50 p-4 flex gap-3">
-          <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
+        <div className="card p-4 flex gap-3">
+          <ShieldCheck className="w-5 h-5 text-success shrink-0" />
           <div>
-            <h4 className="text-sm font-semibold text-white">Editor</h4>
-            <p className="text-xs text-slate-500 mt-1">Pode criar, editar e excluir Organizações e Descritores/Tags livremente.</p>
+            <h4 className="text-sm font-semibold text-foreground">Editor</h4>
+            <p className="text-xs text-muted-foreground mt-1">Pode criar, editar e excluir Organizações e Descritores/Tags livremente.</p>
           </div>
         </div>
-        <div className="card bg-surface-900/50 p-4 flex gap-3">
-          <Shield className="w-5 h-5 text-brand-400 shrink-0" />
+        <div className="card p-4 flex gap-3">
+          <Shield className="w-5 h-5 text-accent shrink-0" />
           <div>
-            <h4 className="text-sm font-semibold text-white">Superadmin</h4>
-            <p className="text-xs text-slate-500 mt-1">Tem todos os poderes do Editor e ainda pode alterar o cargo de outros usuários.</p>
+            <h4 className="text-sm font-semibold text-foreground">Superadmin</h4>
+            <p className="text-xs text-muted-foreground mt-1">Tem todos os poderes do Editor e ainda pode alterar o cargo de outros usuários.</p>
           </div>
         </div>
       </div>
 
       {/* Add User Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="card w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200 border-brand-500/20">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/40">
+          <div className="card w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-white">Adicionar Usuário</h3>
-              <button 
+              <h3 className="text-lg font-bold text-foreground">Adicionar usuário</h3>
+              <button
                 onClick={() => setShowAddModal(false)}
-                className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             <form onSubmit={handleAddUser} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">E-mail</label>
+                <label className="block text-sm font-medium text-foreground mb-1.5">E-mail</label>
                 <input
                   type="email"
                   required
-                  className="input-dark w-full"
+                  className="input w-full"
                   value={newEmail}
                   onChange={e => setNewEmail(e.target.value)}
                   placeholder="usuario@empresa.com"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Senha de Acesso</label>
+                <label className="block text-sm font-medium text-foreground mb-1.5">Senha de acesso</label>
                 <input
                   type="password"
                   required
                   minLength={6}
-                  className="input-dark w-full"
+                  className="input w-full"
                   value={newPassword}
                   onChange={e => setNewPassword(e.target.value)}
                   placeholder="Mínimo 6 caracteres"
@@ -215,19 +214,19 @@ export function UsersManagement() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">Nível de Acesso</label>
+                <label className="block text-sm font-medium text-foreground mb-1.5">Nível de acesso</label>
                 <select
-                  className="input-dark w-full"
+                  className="input w-full"
                   value={newRole}
                   onChange={e => setNewRole(e.target.value as UserRole)}
                 >
-                  <option value="viewer">Viewer (Apenas Leitura)</option>
-                  <option value="editor">Editor (Pode Editar Dados)</option>
-                  <option value="superadmin">Superadmin (Acesso Total)</option>
+                  <option value="viewer">Viewer (apenas leitura)</option>
+                  <option value="editor">Editor (pode editar dados)</option>
+                  <option value="superadmin">Superadmin (acesso total)</option>
                 </select>
               </div>
 
-              <div className="flex gap-3 pt-4 border-t border-white/5">
+              <div className="flex gap-3 pt-4 border-t border-border">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
@@ -238,9 +237,9 @@ export function UsersManagement() {
                 <button
                   type="submit"
                   disabled={isAdding}
-                  className="btn-primary flex-1 justify-center"
+                  className="btn-primary flex-1"
                 >
-                  {isAdding ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Criar Usuário'}
+                  {isAdding ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Criar usuário'}
                 </button>
               </div>
             </form>

@@ -22,7 +22,7 @@ export function QuoteGeneratorModal({ organization, onClose }: QuoteGeneratorMod
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [pax, setPax] = useState('');
-  
+
   const [accommodation, setAccommodation] = useState('Nenhuma');
   const [customAccommodation, setCustomAccommodation] = useState('');
 
@@ -84,33 +84,33 @@ export function QuoteGeneratorModal({ organization, onClose }: QuoteGeneratorMod
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-      <div className="card w-full max-w-4xl animate-in fade-in zoom-in-95 duration-200 border-brand-500/20 flex flex-col md:flex-row my-8 relative overflow-hidden">
-        
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-foreground/40 overflow-y-auto">
+      <div className="card !p-0 w-full max-w-4xl animate-in fade-in zoom-in-95 duration-150 flex flex-col md:flex-row my-8 relative overflow-hidden">
+
         {/* Left Side: Form */}
-        <div className="w-full md:w-1/2 p-6 border-b md:border-b-0 md:border-r border-white/5 space-y-5 max-h-[85vh] overflow-y-auto custom-scrollbar">
+        <div className="w-full md:w-1/2 p-6 border-b md:border-b-0 md:border-r border-border space-y-5 max-h-[85vh] overflow-y-auto">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-brand-400" />
-                Criar Cotação (IA)
+              <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-accent" />
+                Criar cotação (IA)
               </h3>
-              <p className="text-xs text-slate-400 mt-1">Para {organization.name}</p>
+              <p className="text-xs text-muted-foreground mt-1">Para {organization.name}</p>
             </div>
-            <button 
+            <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors md:hidden"
+              className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors md:hidden"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
-          
+
           <form id="quote-form" onSubmit={handleGenerate} className="space-y-4 pb-4">
             {/* Language & Contact */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">Idioma</label>
-                <select className="input-dark w-full text-sm" value={language} onChange={e => setLanguage(e.target.value)}>
+                <label className="block text-xs font-medium text-muted-foreground mb-1.5">Idioma</label>
+                <select className="input text-sm" value={language} onChange={e => setLanguage(e.target.value)}>
                   <option value="Inglês">Inglês (EN)</option>
                   <option value="Espanhol">Espanhol (ES)</option>
                   <option value="Alemão">Alemão (DE)</option>
@@ -119,45 +119,45 @@ export function QuoteGeneratorModal({ organization, onClose }: QuoteGeneratorMod
                   <option value="Outros">Outro...</option>
                 </select>
                 {language === 'Outros' && (
-                  <input type="text" className="input-dark w-full text-sm mt-2" placeholder="Ex: Italiano" value={customLanguage} onChange={e => setCustomLanguage(e.target.value)} required />
+                  <input type="text" className="input text-sm mt-2" placeholder="Ex: Italiano" value={customLanguage} onChange={e => setCustomLanguage(e.target.value)} required />
                 )}
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">Contato Destino</label>
-                <select className="input-dark w-full text-sm" value={contactName} onChange={e => setContactName(e.target.value)}>
-                  <option value="">Equipe Geral</option>
+                <label className="block text-xs font-medium text-muted-foreground mb-1.5">Contato destino</label>
+                <select className="input text-sm" value={contactName} onChange={e => setContactName(e.target.value)}>
+                  <option value="">Equipe geral</option>
                   {organization.contacts?.map(c => (
                     <option key={c.id} value={c.name}>{c.name}</option>
                   ))}
                   <option value="Outros">Outro...</option>
                 </select>
                 {contactName === 'Outros' && (
-                  <input type="text" className="input-dark w-full text-sm mt-2" placeholder="Nome do contato" value={customContact} onChange={e => setCustomContact(e.target.value)} required />
+                  <input type="text" className="input text-sm mt-2" placeholder="Nome do contato" value={customContact} onChange={e => setCustomContact(e.target.value)} required />
                 )}
               </div>
             </div>
 
             {/* Event */}
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Evento / Esporte (Interesse)</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">Evento / esporte (interesse)</label>
               {organization.tags && organization.tags.length > 0 ? (
-                <select className="input-dark w-full text-sm" value={event} onChange={e => setEvent(e.target.value)} required>
+                <select className="input text-sm" value={event} onChange={e => setEvent(e.target.value)} required>
                   <option value="">Selecione um evento listado...</option>
                   {organization.tags.map(t => (
                     <option key={t.id} value={t.name}>{t.name}</option>
                   ))}
-                  <option value="Outros">Outro (Digitar manualmente)...</option>
+                  <option value="Outros">Outro (digitar manualmente)...</option>
                 </select>
               ) : null}
-              
+
               {(event === 'Outros' || !organization.tags || organization.tags.length === 0) && (
-                <input 
-                  type="text" 
-                  className={`input-dark w-full text-sm ${organization.tags && organization.tags.length > 0 ? 'mt-2' : ''}`} 
-                  placeholder="Ex: Formula 1 Monaco" 
-                  value={customEvent} 
-                  onChange={e => setCustomEvent(e.target.value)} 
-                  required 
+                <input
+                  type="text"
+                  className={`input text-sm ${organization.tags && organization.tags.length > 0 ? 'mt-2' : ''}`}
+                  placeholder="Ex: Formula 1 Monaco"
+                  value={customEvent}
+                  onChange={e => setCustomEvent(e.target.value)}
+                  required
                 />
               )}
             </div>
@@ -165,32 +165,32 @@ export function QuoteGeneratorModal({ organization, onClose }: QuoteGeneratorMod
             {/* Dates */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">Data Início</label>
-                <input type="date" className="input-dark w-full text-sm" value={dateFrom} onChange={e => setDateFrom(e.target.value)} />
+                <label className="block text-xs font-medium text-muted-foreground mb-1.5">Data início</label>
+                <input type="date" className="input text-sm" value={dateFrom} onChange={e => setDateFrom(e.target.value)} />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">Data Fim</label>
-                <input type="date" className="input-dark w-full text-sm" value={dateTo} onChange={e => setDateTo(e.target.value)} />
+                <label className="block text-xs font-medium text-muted-foreground mb-1.5">Data fim</label>
+                <input type="date" className="input text-sm" value={dateTo} onChange={e => setDateTo(e.target.value)} />
               </div>
             </div>
 
             {/* Pax & Accommodation */}
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">Nº Pax</label>
-                <input type="number" min="1" className="input-dark w-full text-sm" placeholder="Ex: 2" value={pax} onChange={e => setPax(e.target.value)} />
+                <label className="block text-xs font-medium text-muted-foreground mb-1.5">Nº pax</label>
+                <input type="number" min="1" className="input text-sm" placeholder="Ex: 2" value={pax} onChange={e => setPax(e.target.value)} />
               </div>
               <div className="col-span-2">
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">Hospedagem</label>
-                <select className="input-dark w-full text-sm" value={accommodation} onChange={e => setAccommodation(e.target.value)}>
+                <label className="block text-xs font-medium text-muted-foreground mb-1.5">Hospedagem</label>
+                <select className="input text-sm" value={accommodation} onChange={e => setAccommodation(e.target.value)}>
                   <option value="Nenhuma">Nenhuma</option>
                   <option value="Hotel 3 Estrelas">Hotel 3 Estrelas</option>
                   <option value="Hotel 4 Estrelas">Hotel 4 Estrelas</option>
                   <option value="Hotel 5 Estrelas">Hotel 5 Estrelas</option>
-                  <option value="Outros">Outro (Especificar)...</option>
+                  <option value="Outros">Outro (especificar)...</option>
                 </select>
                 {accommodation === 'Outros' && (
-                  <input type="text" className="input-dark w-full text-sm mt-2" placeholder="Ex: Resort 5 Estrelas" value={customAccommodation} onChange={e => setCustomAccommodation(e.target.value)} required />
+                  <input type="text" className="input text-sm mt-2" placeholder="Ex: Resort 5 Estrelas" value={customAccommodation} onChange={e => setCustomAccommodation(e.target.value)} required />
                 )}
               </div>
             </div>
@@ -198,21 +198,21 @@ export function QuoteGeneratorModal({ organization, onClose }: QuoteGeneratorMod
             {/* Tickets & Transfer */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">Ingressos</label>
-                <select className="input-dark w-full text-sm" value={tickets} onChange={e => setTickets(e.target.value)}>
+                <label className="block text-xs font-medium text-muted-foreground mb-1.5">Ingressos</label>
+                <select className="input text-sm" value={tickets} onChange={e => setTickets(e.target.value)}>
                   <option value="Nenhum">Nenhum</option>
                   <option value="Standard / Arquibancada">Standard / Arquibancada</option>
                   <option value="VIP / Hospitality">VIP / Hospitality</option>
-                  <option value="Outros">Outro (Especificar)...</option>
+                  <option value="Outros">Outro (especificar)...</option>
                 </select>
                 {tickets === 'Outros' && (
-                  <input type="text" className="input-dark w-full text-sm mt-2" placeholder="Ex: Paddock Club" value={customTickets} onChange={e => setCustomTickets(e.target.value)} required />
+                  <input type="text" className="input text-sm mt-2" placeholder="Ex: Paddock Club" value={customTickets} onChange={e => setCustomTickets(e.target.value)} required />
                 )}
               </div>
               <div className="flex items-center pt-6">
-                <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
-                  <input type="checkbox" checked={transfer} onChange={e => setTransfer(e.target.checked)} className="rounded border-white/10 bg-white/5 text-brand-500 focus:ring-brand-500 focus:ring-offset-surface-900" />
-                  Incluir Transfer
+                <label className="flex items-center gap-2 cursor-pointer text-sm text-foreground">
+                  <input type="checkbox" checked={transfer} onChange={e => setTransfer(e.target.checked)} className="rounded border-input bg-card text-accent focus:ring-ring/40" />
+                  Incluir transfer
                 </label>
               </div>
             </div>
@@ -220,41 +220,41 @@ export function QuoteGeneratorModal({ organization, onClose }: QuoteGeneratorMod
         </div>
 
         {/* Right Side: Result */}
-        <div className="w-full md:w-1/2 bg-surface-800/50 p-6 flex flex-col relative min-h-[400px]">
-          <button 
+        <div className="w-full md:w-1/2 bg-muted p-6 flex flex-col relative min-h-[400px]">
+          <button
             onClick={onClose}
-            className="absolute top-6 right-6 p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors hidden md:block"
+            className="absolute top-6 right-6 p-2 text-muted-foreground hover:text-foreground hover:bg-card rounded-md transition-colors hidden md:block"
           >
             <X className="w-5 h-5" />
           </button>
 
           <div className="flex-1 flex flex-col">
-            <h4 className="text-sm font-semibold text-slate-300 mb-4">Resultado Gerado</h4>
-            
-            <div className="flex-1 bg-surface-900 rounded-xl border border-white/5 p-4 relative group flex flex-col">
+            <h4 className="text-sm font-semibold text-foreground mb-4">Resultado gerado</h4>
+
+            <div className="flex-1 bg-card rounded-md border border-border p-4 relative group flex flex-col">
               {isGenerating ? (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-brand-400">
-                  <Loader2 className="w-8 h-8 animate-spin mb-2" />
-                  <span className="text-sm font-medium animate-pulse">A Inteligência Artificial está redigindo...</span>
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-accent">
+                  <Loader2 className="w-7 h-7 animate-spin mb-2" />
+                  <span className="text-sm font-medium">A Inteligência Artificial está redigindo...</span>
                 </div>
               ) : generatedText ? (
                 <>
-                  <textarea 
-                    className="flex-1 w-full bg-transparent border-none outline-none text-sm text-slate-200 resize-none font-mono custom-scrollbar"
+                  <textarea
+                    className="flex-1 w-full bg-transparent border-none outline-none text-sm text-foreground resize-none font-mono"
                     value={generatedText}
                     onChange={(e) => setGeneratedText(e.target.value)}
                   />
                   <button
                     onClick={handleCopy}
-                    className="absolute top-4 right-4 p-2 bg-surface-800 border border-white/10 rounded-lg text-slate-300 hover:text-white hover:border-brand-500 transition-all opacity-0 group-hover:opacity-100 flex items-center gap-2"
+                    className="absolute top-4 right-4 p-2 bg-card border border-border rounded-md text-muted-foreground hover:text-foreground hover:border-accent/50 transition-all opacity-0 group-hover:opacity-100 flex items-center gap-2"
                   >
-                    {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                    <span className="text-xs font-medium">{copied ? 'Copiado!' : 'Copiar Texto'}</span>
+                    {copied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
+                    <span className="text-xs font-medium">{copied ? 'Copiado!' : 'Copiar texto'}</span>
                   </button>
                 </>
               ) : (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-500 text-sm text-center px-8">
-                  <Sparkles className="w-12 h-12 mb-4 opacity-20" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground text-sm text-center px-8">
+                  <Sparkles className="w-10 h-10 mb-4 opacity-20" />
                   <p>Preencha os dados ao lado e clique no botão abaixo para gerar uma cotação impecável usando IA.</p>
                 </div>
               )}
@@ -266,11 +266,11 @@ export function QuoteGeneratorModal({ organization, onClose }: QuoteGeneratorMod
               form="quote-form"
               type="submit"
               disabled={isGenerating}
-              className="btn-primary w-full justify-center h-12 text-base font-semibold"
+              className="btn-primary w-full h-11 text-sm"
             >
-              {isGenerating ? 'Gerando...' : 'Gerar Cotação com IA'}
+              {isGenerating ? 'Gerando...' : 'Gerar cotação com IA'}
             </button>
-            <p className="text-center text-[10px] text-slate-500 mt-3">
+            <p className="text-center text-[10px] text-muted-foreground mt-3">
               Alimentado por Groq Llama-3. Você pode editar o texto antes de copiar.
             </p>
           </div>
