@@ -1,17 +1,25 @@
 // src/components/Sidebar.tsx
 import { NavLink } from 'react-router-dom';
 import {
-  LayoutDashboard, Building2, Tags, Search, Plus, Settings, ChevronRight
+  LayoutDashboard, Building2, Tags, Search, Plus, ChevronRight, LogOut, Users as UsersIcon
 } from 'lucide-react';
 import clsx from 'clsx';
-
-const navItems = [
-  { to: '/', icon: LayoutDashboard, label: 'Dashboard', exact: true },
-  { to: '/organizations', icon: Building2, label: 'Organizações' },
-  { to: '/tags', icon: Tags, label: 'Descritores / Tags' },
-];
+import { useAuth } from '../store/useAuth';
 
 export function Sidebar() {
+  const { profile, signOut } = useAuth();
+  
+  const isSuperadmin = profile?.role === 'superadmin';
+  const isEditor = profile?.role === 'editor' || isSuperadmin;
+
+  const navItems = [
+    { to: '/', icon: LayoutDashboard, label: 'Dashboard', exact: true },
+    { to: '/organizations', icon: Building2, label: 'Parceiros' },
+    // Apenas quem pode editar vê as Tags
+    ...(isEditor ? [{ to: '/tags', icon: Tags, label: 'Descritores / Tags' }] : []),
+    ...(isSuperadmin ? [{ to: '/users', icon: UsersIcon, label: 'Gerenciar Usuários' }] : []),
+  ];
+
   return (
     <aside className="fixed left-0 top-0 h-screen w-60 glass border-r border-white/5 flex flex-col z-20">
       {/* Logo */}
@@ -21,23 +29,24 @@ export function Sidebar() {
             <Search className="w-4 h-4 text-white" />
           </div>
           <div>
-            <p className="text-sm font-bold text-slate-100 tracking-tight">ISTAA</p>
-            <p className="text-[10px] text-slate-500 leading-none mt-0.5">Turismo Esportivo</p>
+            <p className="text-xs font-bold text-slate-100 leading-tight">Guia de Parceiros de Turismo Esportivo - (Internacional)</p>
           </div>
         </div>
       </div>
 
       {/* Quick Action */}
-      <div className="px-3 py-3 border-b border-white/5">
-        <NavLink
-          to="/organizations/new"
-          className="flex items-center gap-2 w-full px-3 py-2 rounded-xl bg-brand-600/90 hover:bg-brand-600 
-                     text-white text-sm font-medium transition-all duration-200 shadow-lg shadow-brand-600/20"
-        >
-          <Plus className="w-4 h-4" />
-          Nova Organização
-        </NavLink>
-      </div>
+      {isEditor && (
+        <div className="px-3 py-3 border-b border-white/5">
+          <NavLink
+            to="/organizations/new"
+            className="flex items-center gap-2 w-full px-3 py-2 rounded-xl bg-brand-600/90 hover:bg-brand-600 
+                       text-white text-sm font-medium transition-all duration-200 shadow-lg shadow-brand-600/20"
+          >
+            <Plus className="w-4 h-4" />
+            Novo Parceiro
+          </NavLink>
+        </div>
+      )}
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
@@ -63,19 +72,20 @@ export function Sidebar() {
 
       {/* Footer */}
       <div className="px-3 py-3 border-t border-white/5">
-        <NavLink
-          to="/settings"
-          className={({ isActive }) => clsx('sidebar-link', isActive && 'active')}
+        {profile && (
+          <div className="mb-3 px-3 py-2 rounded-xl bg-surface-900/60 border border-white/5 flex flex-col">
+            <span className="text-xs text-slate-300 font-medium truncate">{profile.email}</span>
+            <span className="text-[10px] text-brand-400 uppercase font-bold tracking-wider mt-0.5">Perfil: {profile.role}</span>
+          </div>
+        )}
+        
+        <button
+          onClick={signOut}
+          className="sidebar-link w-full text-left flex items-center gap-2 text-slate-400 hover:text-red-400"
         >
-          <Settings className="w-4 h-4 shrink-0" />
-          Configurações
-        </NavLink>
-        <div className="mt-3 px-3 py-2 rounded-xl bg-surface-900/60 border border-white/5">
-          <p className="text-[10px] text-slate-600 leading-relaxed">
-            Dados salvos localmente.<br />
-            Conecte ao Supabase para persistência.
-          </p>
-        </div>
+          <LogOut className="w-4 h-4 shrink-0" />
+          Sair
+        </button>
       </div>
     </aside>
   );

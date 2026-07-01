@@ -24,7 +24,6 @@ export function TagsList() {
     
     addTag({
       name: newTagName,
-      slug: newTagName.toLowerCase().replace(/\s+/g, '-'),
       category: newTagCategory,
       color: newTagColor,
     });

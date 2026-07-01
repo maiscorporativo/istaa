@@ -5,19 +5,27 @@ import { useStore } from '../store/useStore';
 import { Omnibox } from '../components/Omnibox';
 import { StatusBadge } from '../components/StatusBadge';
 import { TagChip } from '../components/TagChip';
-import { Building2, Globe2, Users, ArrowUpRight, Grid, List, Search } from 'lucide-react';
+import { Building2, Globe2, Users, ArrowUpRight, Grid, List, Search, Mail, Phone, User, FilterX } from 'lucide-react';
 import { removeAccents } from '../utils';
 import type { Tag } from '../types';
 
 export function Dashboard() {
   const navigate = useNavigate();
-  const { organizations } = useStore();
+  const { organizations, loading } = useStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
+  const [cardFilter, setCardFilter] = useState<'all' | 'countries' | 'contacts'>('all');
 
   const filteredOrgs = useMemo(() => {
     let result = organizations;
+
+    // Filter by Metric Cards
+    if (cardFilter === 'countries') {
+      result = result.filter(org => org.country && org.country.trim() !== '');
+    } else if (cardFilter === 'contacts') {
+      result = result.filter(org => org.contacts && org.contacts.length > 0);
+    }
 
     // Filter by tags (AND logic: must have all selected tags)
     if (selectedTags.length > 0) {
@@ -38,17 +46,27 @@ export function Dashboard() {
     }
 
     return result;
-  }, [organizations, searchQuery, selectedTags]);
+  }, [organizations, searchQuery, selectedTags, cardFilter]);
 
-  const handleSearch = (query: string, tags: Tag[]) => {
-    setSearchQuery(query);
-    setSelectedTags(tags);
+
+
+  const handleEventClick = (eventName: string) => {
+    setSearchQuery(eventName);
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full min-h-[60vh]">
+        <div className="w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-slate-400 font-medium">Carregando dados...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       {/* Header */}
-      <div className="flex flex-col items-center text-center space-y-4 mb-12">
+      <div className="flex flex-col items-center text-center space-y-4 mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 text-xs font-medium border border-brand-500/20">
           <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
           Sistema Inteligente de Recuperação
@@ -61,40 +79,99 @@ export function Dashboard() {
         </p>
       </div>
 
-      {/* Omnibox */}
-      <Omnibox onSearch={handleSearch} />
+      {/* Quick Event Filters */}
+      <div className="flex flex-wrap justify-center gap-2 mb-2">
+        {[
+          { name: 'Champions League', icon: '🏆' },
+          { name: 'Libertadores', icon: '⚽' },
+          { name: 'Roland Garros', icon: '🎾' },
+          { name: 'NBA', icon: '🏀' },
+          { name: 'Fórmula 1', icon: '🏁' },
+        ].map(event => (
+          <button
+            key={event.name}
+            onClick={() => handleEventClick(event.name)}
+            className={`px-4 py-2 rounded-full border text-sm font-medium transition-all ${
+              searchQuery === event.name 
+                ? 'bg-brand-500 text-white border-brand-500 shadow-lg shadow-brand-500/20' 
+                : 'bg-surface-800/50 text-slate-300 hover:bg-white/10 border-white/5'
+            }`}
+          >
+            {event.icon} {event.name}
+          </button>
+        ))}
+        {searchQuery && (
+          <button
+            onClick={() => handleEventClick('')}
+            className="px-4 py-2 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 text-sm font-medium transition-all flex items-center gap-1"
+          >
+            <FilterX className="w-4 h-4" /> Limpar Busca
+          </button>
+        )}
+      </div>
 
-      {/* Stats row */}
+      {/* Omnibox */}
+      <Omnibox 
+        query={searchQuery}
+        onQueryChange={setSearchQuery}
+        selectedTags={selectedTags}
+        onTagsChange={setSelectedTags}
+      />
+
+      {/* Stats row as Interactive Filters */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-        <div className="card flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400">
+        {/* All Entities Card / Clear Card Filter */}
+        <div 
+          onClick={() => { setCardFilter('all'); setSearchQuery(''); setSelectedTags([]); }}
+          className={`card flex items-center gap-4 cursor-pointer transition-all hover:scale-[1.02] ${
+            cardFilter === 'all' && !searchQuery && selectedTags.length === 0 ? 'ring-2 ring-blue-500/50 bg-blue-500/5' : 'hover:bg-white/5'
+          }`}
+          title="Clique para limpar os filtros e ver todas as entidades"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 shrink-0">
             <Building2 className="w-6 h-6" />
           </div>
           <div>
             <p className="text-2xl font-bold text-white">{organizations.length}</p>
-            <p className="text-xs text-slate-400 font-medium">Entidades Cadastradas</p>
+            <p className="text-xs text-slate-400 font-medium">Todas Entidades (Limpar Filtros)</p>
           </div>
         </div>
-        <div className="card flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+
+        {/* Countries Card */}
+        <div 
+          onClick={() => setCardFilter('countries')}
+          className={`card flex items-center gap-4 cursor-pointer transition-all hover:scale-[1.02] ${
+            cardFilter === 'countries' ? 'ring-2 ring-emerald-500/50 bg-emerald-500/5' : 'hover:bg-white/5'
+          }`}
+          title="Clique para ver apenas as entidades que possuem País cadastrado"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
             <Globe2 className="w-6 h-6" />
           </div>
           <div>
             <p className="text-2xl font-bold text-white">
               {new Set(organizations.map(o => o.country).filter(Boolean)).size}
             </p>
-            <p className="text-xs text-slate-400 font-medium">Países Cobertos</p>
+            <p className="text-xs text-slate-400 font-medium">Filtrar por Países Cobertos</p>
           </div>
         </div>
-        <div className="card flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400">
+
+        {/* Contacts Card */}
+        <div 
+          onClick={() => setCardFilter('contacts')}
+          className={`card flex items-center gap-4 cursor-pointer transition-all hover:scale-[1.02] ${
+            cardFilter === 'contacts' ? 'ring-2 ring-purple-500/50 bg-purple-500/5' : 'hover:bg-white/5'
+          }`}
+          title="Clique para ver apenas as entidades que possuem contatos diretos cadastrados"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 shrink-0">
             <Users className="w-6 h-6" />
           </div>
           <div>
             <p className="text-2xl font-bold text-white">
               {organizations.reduce((acc, org) => acc + org.contacts.length, 0)}
             </p>
-            <p className="text-xs text-slate-400 font-medium">Contatos Diretos</p>
+            <p className="text-xs text-slate-400 font-medium">Filtrar por Contatos Diretos</p>
           </div>
         </div>
       </div>
@@ -154,12 +231,36 @@ export function Dashboard() {
                 )}
               </div>
 
-              <div className="pt-4 border-t border-white/5 flex items-center justify-between mt-auto">
-                <StatusBadge status={org.status} />
-                {org.site && (
-                  <a href={org.site} target="_blank" rel="noreferrer" className="text-xs text-brand-400 hover:text-brand-300 font-medium">
-                    Acessar site
-                  </a>
+              <div className="pt-4 border-t border-white/5 flex flex-col gap-2 mt-auto">
+                <div className="flex items-center justify-between">
+                  <StatusBadge status={org.status} />
+                  {org.site && (
+                    <a href={org.site} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()} className="text-xs text-brand-400 hover:text-brand-300 font-medium">
+                      Acessar site
+                    </a>
+                  )}
+                </div>
+                {org.contacts?.[0] && (
+                  <div className="flex flex-col gap-1 pt-1">
+                    {org.contacts[0].name && (
+                      <span className="flex items-center gap-1.5 text-xs text-slate-400">
+                        <User className="w-3 h-3 text-slate-500 shrink-0" />
+                        {org.contacts[0].name}
+                      </span>
+                    )}
+                    {org.contacts[0].email && (
+                      <a href={`mailto:${org.contacts[0].email}`} onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 text-xs text-brand-400 hover:text-brand-300">
+                        <Mail className="w-3 h-3 shrink-0" />
+                        {org.contacts[0].email}
+                      </a>
+                    )}
+                    {org.contacts[0].phone && (
+                      <a href={`tel:${org.contacts[0].phone}`} onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-300">
+                        <Phone className="w-3 h-3 shrink-0" />
+                        {org.contacts[0].phone}
+                      </a>
+                    )}
+                  </div>
                 )}
               </div>
             </div>

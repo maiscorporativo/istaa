@@ -1,5 +1,5 @@
 // src/components/Omnibox.tsx
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Search, Command, X } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { TagChip } from './TagChip';
@@ -7,13 +7,14 @@ import { removeAccents } from '../utils';
 import type { Tag } from '../types';
 
 interface OmniboxProps {
-  onSearch: (query: string, selectedTags: Tag[]) => void;
+  query: string;
+  onQueryChange: (query: string) => void;
+  selectedTags: Tag[];
+  onTagsChange: (tags: Tag[]) => void;
 }
 
-export function Omnibox({ onSearch }: OmniboxProps) {
+export function Omnibox({ query, onQueryChange, selectedTags, onTagsChange }: OmniboxProps) {
   const { tags } = useStore();
-  const [query, setQuery] = useState('');
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -27,19 +28,14 @@ export function Omnibox({ onSearch }: OmniboxProps) {
     })
     .slice(0, 5); // show max 5 suggestions
 
-  // Trigger search on change
-  useEffect(() => {
-    onSearch(query, selectedTags);
-  }, [query, selectedTags, onSearch]);
-
   const handleSelectTag = (tag: Tag) => {
-    setSelectedTags([...selectedTags, tag]);
-    setQuery('');
+    onTagsChange([...selectedTags, tag]);
+    onQueryChange('');
     inputRef.current?.focus();
   };
 
   const handleRemoveTag = (tagId: string) => {
-    setSelectedTags(selectedTags.filter(t => t.id !== tagId));
+    onTagsChange(selectedTags.filter(t => t.id !== tagId));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -70,7 +66,7 @@ export function Omnibox({ onSearch }: OmniboxProps) {
             className="flex-1 min-w-[120px] bg-transparent border-none outline-none text-sm text-slate-100 placeholder-slate-500 py-1"
             placeholder={selectedTags.length === 0 ? "Busque por nome, liga, país (ex: Fórmula 1 Brasil)..." : "Adicionar mais filtros..."}
             value={query}
-            onChange={e => setQuery(e.target.value)}
+            onChange={e => onQueryChange(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             onKeyDown={handleKeyDown}
@@ -80,7 +76,7 @@ export function Omnibox({ onSearch }: OmniboxProps) {
         <div className="pr-3 flex items-center gap-2">
           {query || selectedTags.length > 0 ? (
             <button 
-              onClick={() => { setQuery(''); setSelectedTags([]); }}
+              onClick={() => { onQueryChange(''); onTagsChange([]); }}
               className="p-1 text-slate-500 hover:text-slate-300 hover:bg-white/10 rounded-lg transition-colors"
             >
               <X className="w-4 h-4" />
