@@ -13,6 +13,10 @@ dist-ssr
 *.local
 .env
 
+# Database dumps (may contain real user data / password hashes)
+meu_banco_exportado.sql
+*.sql.dump
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

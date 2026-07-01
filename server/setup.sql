@@ -1,7 +1,6 @@
 -- MySQL Schema for Guia de Parceiros (formerly ISTAA)
 
-CREATE DATABASE IF NOT EXISTS guia_parceiros CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE guia_parceiros;
+
 
 CREATE TABLE IF NOT EXISTS users (
   id VARCHAR(36) PRIMARY KEY,

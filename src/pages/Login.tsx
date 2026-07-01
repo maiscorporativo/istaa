@@ -49,12 +49,7 @@ export function Login() {
         <div className="absolute inset-0 bg-gradient-to-b from-sidebar/90 via-sidebar/75 to-sidebar/95" />
         <div className="absolute inset-0 bg-sidebar/40" />
 
-        <div className="relative flex items-center gap-3">
-          <div className="w-9 h-9 rounded-md bg-accent flex items-center justify-center shrink-0">
-            <span className="text-accent-foreground font-bold text-[11px] tracking-tight">P2P</span>
-          </div>
-          <span className="text-sm font-bold text-white tracking-tight">Guia de Parceiros</span>
-        </div>
+        <img src="/emais-logo.svg" alt="e-mais" className="relative h-8 w-auto" />
 
         <div className="relative max-w-sm">
           <h2 className="text-3xl font-semibold text-white leading-snug">
@@ -65,7 +60,13 @@ export function Login() {
           </p>
         </div>
 
-        <p className="relative text-[11px] text-sidebar-foreground/45">© {new Date().getFullYear()} Mais Corporativo. Todos os direitos reservados.</p>
+        <div className="relative flex items-end justify-between gap-4">
+          <p className="text-[11px] text-sidebar-foreground/45">© {new Date().getFullYear()} Mais Corporativo. Todos os direitos reservados.</p>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className="text-[10px] text-sidebar-foreground/45 uppercase tracking-wide">Desenvolvido por</span>
+            <img src="/logo_mais_branco.png" alt="Mais Corporativo" className="h-4 w-auto opacity-90" />
+          </div>
+        </div>
       </div>
 
       {/* Form panel */}
@@ -75,11 +76,8 @@ export function Login() {
         </div>
 
         <div className="max-w-sm w-full">
-          <div className="mb-8 md:hidden flex items-center gap-3">
-            <div className="w-9 h-9 rounded-md bg-accent flex items-center justify-center shrink-0">
-              <span className="text-accent-foreground font-bold text-[11px] tracking-tight">P2P</span>
-            </div>
-            <span className="text-sm font-bold text-foreground tracking-tight">Guia de Parceiros</span>
+          <div className="mb-8 md:hidden">
+            <img src="/logo_emais_laranja.png" alt="e-mais" className="h-7 w-auto" />
           </div>
 
           <h1 className="text-2xl font-bold text-foreground tracking-tight">
