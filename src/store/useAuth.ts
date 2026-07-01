@@ -95,7 +95,7 @@ export function useAuth(): AuthStore {
     }
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (_email: string, _password: string) => {
     // Signup is not exposed in the API to prevent public registration in this CMS.
     // Must be added manually or by a superadmin endpoint if needed later.
     return { error: new Error('Registro desabilitado. Contate o administrador.') };

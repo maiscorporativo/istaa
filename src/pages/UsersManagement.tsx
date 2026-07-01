@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../lib/api';
-import { Shield, ShieldAlert, ShieldCheck, UserCog, KeyRound, CheckCircle2, Plus, X, Loader2 } from 'lucide-react';
+import { Shield, ShieldAlert, ShieldCheck, UserCog, KeyRound, Plus, X, Loader2 } from 'lucide-react';
 import type { Profile, UserRole } from '../store/useAuth';
 
 export function UsersManagement() {
@@ -67,7 +67,7 @@ export function UsersManagement() {
     }
   };
 
-  const resetPassword = async (profile: Profile) => {
+  const resetPassword = async (_profile: Profile) => {
     alert('A redefinição de senha por e-mail no MySQL será implementada em uma próxima atualização com envio de SMTP.');
   };
 

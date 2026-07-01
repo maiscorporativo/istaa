@@ -1,21 +1,21 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:3000/api';
 
 export const api = {
-  get: async (endpoint) => {
+  get: async (endpoint: string) => {
     return request(endpoint, 'GET');
   },
-  post: async (endpoint, data) => {
+  post: async (endpoint: string, data?: any) => {
     return request(endpoint, 'POST', data);
   },
-  put: async (endpoint, data) => {
+  put: async (endpoint: string, data?: any) => {
     return request(endpoint, 'PUT', data);
   },
-  delete: async (endpoint) => {
+  delete: async (endpoint: string) => {
     return request(endpoint, 'DELETE');
   }
 };
 
-async function request(endpoint, method, data) {
+async function request(endpoint: string, method: string, data?: any) {
   const sessionStr = localStorage.getItem('auth_session');
   let token = null;
   if (sessionStr) {
@@ -25,7 +25,7 @@ async function request(endpoint, method, data) {
     } catch (e) {}
   }
 
-  const headers = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json'
   };
 
@@ -33,7 +33,7 @@ async function request(endpoint, method, data) {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const config = {
+  const config: RequestInit = {
     method,
     headers,
   };
