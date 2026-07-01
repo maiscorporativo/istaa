@@ -26,8 +26,12 @@ app.use('/api/quotes', quotesRoutes);
 app.use(express.static(path.join(__dirname, '../dist')));
 
 // Redirecionar qualquer outra rota para o index.html do React (SPA Routing)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
+app.use((req, res, next) => {
+  if (req.method === 'GET' && req.accepts('html')) {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  } else {
+    next();
+  }
 });
 
 const PORT = process.env.PORT || 3000;
